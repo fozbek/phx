@@ -15,5 +15,8 @@
         }
     ],
     "bin": "phx",
-    "require": {}
+    "require": {
+        "php": ">=7.0.0",
+        "composer/composer": "^2.7"
+    }
 }

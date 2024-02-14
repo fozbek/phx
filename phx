@@ -1,3 +1,45 @@
+#!/usr/bin/env php
 <?php
 
-echo 'hello world';
+include __DIR__ . '/vendor/autoload.php';
+
+use Composer\Console\Application;
+use Symfony\Component\Console\Application as SymfonyConsoleApplication;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class PhxCommand extends Command
+{
+    protected function configure()
+    {
+        $this
+            ->setDescription('Run PHX')
+            ->setName('phx');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        putenv('COMPOSER_HOME=' . __DIR__ . '/vendor/bin/composer');
+        $input2 = new ArrayInput(array('command' => 'exec'));
+        $application = new Application();
+        $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
+        $application->run($input2);
+
+        $output->writeln('Whoa!');
+
+        return Command::SUCCESS;
+    }
+}
+
+//Composer\Factory::getHomeDir()
+
+
+$application = new SymfonyConsoleApplication('PHX', '0.0.1');
+
+$command = new PhxCommand();
+$application->add($command);
+$application->setDefaultCommand($command->getName(), true);
+
+$application->run();
