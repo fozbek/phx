@@ -1,0 +1,19 @@
+{
+    "name": "fozbek/phx",
+    "description": "npx for php",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Fozbek\\Phx\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fatih Ozbek",
+            "email": "mail@fatih.dev"
+        }
+    ],
+    "bin": "phx",
+    "require": {}
+}
