@@ -2,6 +2,7 @@
     "name": "fozbek/phx",
     "description": "npx for php",
     "type": "library",
+    "version": "0.0.1",
     "license": "MIT",
     "autoload": {
         "psr-4": {
