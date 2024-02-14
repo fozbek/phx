@@ -17,6 +17,7 @@
     "bin": "phx",
     "require": {
         "php": ">=7.0.0",
-        "composer/composer": "^2.7"
+        "composer/composer": "^2.7",
+        "symfony/process": "^6.4"
     }
 }

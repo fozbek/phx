@@ -7,8 +7,11 @@ use Composer\Console\Application;
 use Symfony\Component\Console\Application as SymfonyConsoleApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class PhxCommand extends Command
 {
@@ -16,24 +19,36 @@ class PhxCommand extends Command
     {
         $this
             ->setDescription('Run PHX')
-            ->setName('phx');
+            ->setName('phx')
+            ->addArgument('package', InputArgument::REQUIRED, 'Package to run');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        putenv('COMPOSER_HOME=' . __DIR__ . '/vendor/bin/composer');
-        $input2 = new ArrayInput(array('command' => 'exec'));
-        $application = new Application();
-        $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
-        $application->run($input2);
+        $packageName = $input->getArgument('package');
+        $process = new Process(['composer', 'global', 'require', $packageName]);
+        $process->run();
 
-        $output->writeln('Whoa!');
+        // todo: temp solution, fix this
+        $parts = explode('/', $packageName);
+        $executableName = end($parts);
+
+        $process2 = new Process(['composer', 'global', 'exec', $executableName]);
+        $process2->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        if (!$process2->isSuccessful()) {
+            throw new ProcessFailedException($process2);
+        }
+
+        $output->writeln($process2->getOutput());
 
         return Command::SUCCESS;
     }
 }
-
-//Composer\Factory::getHomeDir()
 
 
 $application = new SymfonyConsoleApplication('PHX', '0.0.1');
